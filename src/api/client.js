@@ -1,4 +1,6 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const envBase = (import.meta.env.VITE_API_URL || '').trim();
+// Default to same-origin so Apache/Nginx reverse proxy can route /api correctly.
+const API_BASE = envBase ? envBase.replace(/\/$/, '') : '';
 
 export const getToken = () => localStorage.getItem('souqli_token');
 
