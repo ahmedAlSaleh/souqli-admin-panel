@@ -1,0 +1,43 @@
+name: Deploy Frontend to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            cd /var/www/souqli-admin-panel
+            git fetch --all --prune
+            git checkout main
+            git pull --ff-only origin main
+
+            # Keep production API same-origin via Apache reverse proxy (/api).
+            cat > .env.production <<'EOF'
+            VITE_API_URL=
+            EOF
+
+            npm ci
+            npm run build
+
+            chown -R www-data:www-data /var/www/souqli-admin-panel/dist
+            find /var/www/souqli-admin-panel/dist -type d -exec chmod 755 {} \;
+            find /var/www/souqli-admin-panel/dist -type f -exec chmod 644 {} \;
+
+            systemctl reload apache2
+            curl -I https://souqli.shop >/dev/null
