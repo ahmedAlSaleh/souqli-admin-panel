@@ -85,6 +85,16 @@ const StoresIcon = (props) => (
   </svg>
 );
 
+const SizeChartsIcon = (props) => (
+  <svg {...baseProps} {...props}>
+    <path d="M4 7h16" />
+    <path d="M4 17h16" />
+    <path d="M8 7v10" />
+    <path d="M12 7v10" />
+    <path d="M16 7v10" />
+  </svg>
+);
+
 const CartsIcon = (props) => (
   <svg {...baseProps} {...props}>
     <circle cx="9" cy="20" r="1.6" />
@@ -113,6 +123,7 @@ const iconMap = {
   pages: PagesIcon,
   records: RecordsIcon,
   attributes: AttributesIcon,
+  size_charts: SizeChartsIcon,
   stores: StoresIcon,
   carts: CartsIcon,
   payments: PaymentsIcon

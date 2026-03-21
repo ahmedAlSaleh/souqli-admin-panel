@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import CategoriesPage from './pages/CategoriesPage.jsx';
 import SubcategoriesPage from './pages/SubcategoriesPage.jsx';
 import AttributesPage from './pages/AttributesPage.jsx';
+import SizeChartsPage from './pages/SizeChartsPage.jsx';
 import ProductsPage from './pages/ProductsPage.jsx';
 import StoresPage from './pages/StoresPage.jsx';
 import OrdersPage from './pages/OrdersPage.jsx';
@@ -33,6 +34,7 @@ const App = () => {
       { id: 'main_categories', label: t('nav.main_categories'), icon: 'main_categories' },
       { id: 'subcategories', label: t('nav.subcategories'), icon: 'subcategories' },
       { id: 'attributes', label: t('nav.attributes'), icon: 'attributes' },
+      { id: 'size_charts', label: t('nav.size_charts'), icon: 'size_charts' },
       { id: 'products', label: t('nav.products'), icon: 'products' },
       { id: 'stores', label: t('nav.stores'), icon: 'stores' },
       { id: 'orders', label: t('nav.orders'), icon: 'orders' },
@@ -146,6 +148,7 @@ const App = () => {
             <SubcategoriesPage onCategoriesChanged={loadSidebarCategories} />
           )}
           {view === 'attributes' && <AttributesPage />}
+          {view === 'size_charts' && <SizeChartsPage />}
           {view === 'products' && <ProductsPage />}
           {view === 'stores' && <StoresPage />}
           {view === 'orders' && <OrdersPage />}

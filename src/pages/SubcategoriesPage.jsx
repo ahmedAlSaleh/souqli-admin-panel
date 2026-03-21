@@ -49,7 +49,7 @@ const SubcategoriesPage = ({ onCategoriesChanged }) => {
       ]);
       setItems(subs.items || []);
       setPagination(subs.pagination || null);
-      setParents((cats.items || []).filter((item) => !item.parent_id));
+      setParents(cats.items || []);
       if (!templateCategoryId && (subs.items || []).length) {
         setTemplateCategoryId(String(subs.items[0].id));
       }
@@ -277,11 +277,13 @@ const SubcategoriesPage = ({ onCategoriesChanged }) => {
             <label>{t('subcategories.parent')}</label>
             <select name="parent_id" value={form.parent_id} onChange={handleChange} required>
               <option value="">{t('subcategories.select_parent')}</option>
-              {parents.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
+              {parents
+                .filter((item) => Number(item.id) !== Number(editingId))
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="form-group">

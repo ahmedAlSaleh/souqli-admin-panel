@@ -19,6 +19,9 @@ export const subcategoryApi = {
   list: (page = 1, limit = 50) =>
     request(`/api/admin/subcategories?page=${page}&limit=${limit}`),
   listAttributes: (id) => request(`/api/admin/subcategories/${id}/attributes`),
+  listSizeChart: (id) => request(`/api/admin/subcategories/${id}/size-chart`),
+  replaceSizeChart: (id, payload) =>
+    request(`/api/admin/subcategories/${id}/size-chart`, { method: 'PUT', body: payload }),
   attachAttribute: (id, payload) =>
     request(`/api/admin/subcategories/${id}/attributes`, { method: 'POST', body: payload }),
   updateAttribute: (id, mapId, payload) =>
