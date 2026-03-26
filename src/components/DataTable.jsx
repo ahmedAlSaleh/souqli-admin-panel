@@ -11,7 +11,7 @@ const DataTable = ({ columns, rows, emptyMessage }) => {
         <thead>
           <tr>
             {columns.map((col) => (
-              <th key={col.key} style={{ textAlign: col.align || 'left' }}>
+              <th key={col.key} style={{ textAlign: col.align || 'start' }}>
                 {col.label}
               </th>
             ))}
@@ -22,7 +22,7 @@ const DataTable = ({ columns, rows, emptyMessage }) => {
             rows.map((row, index) => (
               <tr key={row.id || index} style={{ '--i': index }}>
                 {columns.map((col) => (
-                  <td key={col.key} style={{ textAlign: col.align || 'left' }}>
+                  <td key={col.key} style={{ textAlign: col.align || 'start' }}>
                     {col.render ? col.render(row) : row[col.key]}
                   </td>
                 ))}

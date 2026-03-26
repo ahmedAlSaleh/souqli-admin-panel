@@ -429,7 +429,11 @@ const SubcategoriesPage = ({ onCategoriesChanged }) => {
           {
             key: 'data_type',
             label: t('table.type'),
-            render: (row) => t(`data_types.${row.data_type}`) || row.data_type
+            render: (row) => {
+              const key = `data_types.${row.data_type}`;
+              const label = t(key);
+              return label === key ? row.data_type : label;
+            }
           },
           {
             key: 'is_required',

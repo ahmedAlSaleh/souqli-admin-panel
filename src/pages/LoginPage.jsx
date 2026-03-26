@@ -21,39 +21,44 @@ const LoginPage = ({ onLogin, error, loading }) => {
       <div className="login-card">
         <div className="login-info">
           <div className="login-actions">
-            <div className="lang-toggle">
+            <div className="lang-toggle" role="group" aria-label="Language switcher">
               <button
                 className={lang === 'en' ? 'lang-button active' : 'lang-button'}
                 type="button"
                 onClick={() => setLang('en')}
               >
-                EN
+                {t('common.lang_en')}
               </button>
               <button
                 className={lang === 'ar' ? 'lang-button active' : 'lang-button'}
                 type="button"
                 onClick={() => setLang('ar')}
               >
-                عربي
+                {t('common.lang_ar')}
               </button>
             </div>
           </div>
+
           <p className="eyebrow">{t('auth.brand')}</p>
           <h2>{t('auth.title')}</h2>
           <p className="muted">{t('auth.subtitle')}</p>
         </div>
+
         <form className="login-form" onSubmit={handleSubmit}>
-          <label>{t('auth.email')}</label>
+          <label htmlFor="login-email">{t('auth.email')}</label>
           <input
+            id="login-email"
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
-            placeholder="admin@souqli.com"
+            placeholder="admin@souqli.shop"
             required
           />
-          <label>{t('auth.password')}</label>
+
+          <label htmlFor="login-password">{t('auth.password')}</label>
           <input
+            id="login-password"
             type="password"
             name="password"
             value={form.password}
@@ -61,7 +66,9 @@ const LoginPage = ({ onLogin, error, loading }) => {
             placeholder="********"
             required
           />
+
           <Notice type="error" message={error} />
+
           <button className="primary-button full" type="submit" disabled={loading}>
             {loading ? t('common.signing_in') : t('common.sign_in')}
           </button>

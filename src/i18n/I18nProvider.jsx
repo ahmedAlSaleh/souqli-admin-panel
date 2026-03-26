@@ -8,7 +8,14 @@ const I18nContext = createContext({
 });
 
 export const I18nProvider = ({ children }) => {
-  const [lang, setLang] = useState(() => localStorage.getItem('souqli_lang') || 'en');
+  const [lang, setLangState] = useState(() => {
+    const stored = localStorage.getItem('souqli_lang');
+    return stored === 'ar' || stored === 'en' ? stored : 'en';
+  });
+
+  const setLang = (nextLang) => {
+    setLangState(nextLang === 'ar' ? 'ar' : 'en');
+  };
 
   useEffect(() => {
     localStorage.setItem('souqli_lang', lang);
