@@ -2,7 +2,8 @@
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { homeBannersApi } from '../api/index.js';
+import AppImage from '../components/AppImage.jsx';
+import { homeBannersApi, uploadApi } from '../api/index.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
 
@@ -23,6 +24,7 @@ const HomeBannersPage = () => {
   const [editingId, setEditingId] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const { t } = useI18n();
@@ -83,6 +85,11 @@ const HomeBannersPage = () => {
       is_active: Boolean(form.is_active)
     };
 
+    if (!payload.image_url) {
+      setError(t('home_banners.image_required'));
+      return;
+    }
+
     try {
       if (editingId) {
         await homeBannersApi.update(editingId, payload);
@@ -95,6 +102,22 @@ const HomeBannersPage = () => {
       load();
     } catch (err) {
       setError(err.message || t('errors.pages_save'));
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setImageUploading(true);
+    try {
+      const data = await uploadApi.uploadImage(file, 'home-banners');
+      setForm((prev) => ({ ...prev, image_url: data.url || '' }));
+    } catch (err) {
+      setError(err.message || t('errors.image_upload'));
+    } finally {
+      setImageUploading(false);
+      event.target.value = '';
     }
   };
 
@@ -150,8 +173,21 @@ const HomeBannersPage = () => {
             <input name="subtitle" value={form.subtitle} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label>{t('home_banners.image_url')}</label>
-            <input name="image_url" value={form.image_url} onChange={handleChange} required />
+            <label>{t('home_banners.image')}</label>
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+            {imageUploading && <span className="muted">{t('common.uploading')}</span>}
+            <div className="image-preview-row">
+              <AppImage src={form.image_url} alt={form.title || t('home_banners.title')} className="table-thumb" />
+              {form.image_url && (
+                <button
+                  className="ghost-button danger"
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, image_url: '' }))}
+                >
+                  {t('common.remove_image')}
+                </button>
+              )}
+            </div>
           </div>
           <div className="form-group">
             <label>{t('home_banners.button_text')}</label>
@@ -190,7 +226,7 @@ const HomeBannersPage = () => {
       <div className="toolbar">
         <input
           type="text"
-          placeholder={t('home_banners.title')}
+          placeholder={t('home_banners.search_placeholder')}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
@@ -202,6 +238,11 @@ const HomeBannersPage = () => {
       <DataTable
         columns={[
           { key: 'id', label: t('table.id') },
+          {
+            key: 'image_url',
+            label: t('table.image'),
+            render: (row) => <AppImage src={row.image_url} alt={row.title} className="table-thumb" />
+          },
           { key: 'title', label: t('table.title') },
           { key: 'sort_order', label: t('table.sort') },
           {

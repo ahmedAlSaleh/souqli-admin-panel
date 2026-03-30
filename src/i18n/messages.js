@@ -22,6 +22,8 @@ const messages = {
       "no_data": "No data yet.",
       "results": "results",
       "loading": "Loading...",
+      "uploading": "Uploading image...",
+      "remove_image": "Remove image",
       "total": "Total",
       "lang_en": "EN",
       "lang_ar": "AR"
@@ -98,7 +100,7 @@ const messages = {
       "editing": "Editing Main Category",
       "name": "Name",
       "slug": "Slug",
-      "image_url": "Image URL",
+      "image": "Image",
       "auto": "Auto",
       "sort_order": "Sort Order",
       "search_placeholder": "Search main categories...",
@@ -106,7 +108,8 @@ const messages = {
       "created": "Main category created",
       "updated": "Main category updated",
       "deleted": "Main category deleted",
-      "delete_confirm": "Delete main category"
+      "delete_confirm": "Delete main category",
+      "image_url": "Image"
     },
     "subcategories": {
       "title": "Subcategories",
@@ -196,7 +199,7 @@ const messages = {
       "deal_start": "Deal start",
       "deal_end": "Deal end",
       "images": "Product Images",
-      "image_url": "Image URL",
+      "image": "Image",
       "image_alt": "Alt text",
       "add_image": "Add image",
       "no_images": "No images added yet.",
@@ -237,7 +240,8 @@ const messages = {
       "stores_required": "Please select at least one store.",
       "store_stock": "Stock",
       "store_price_override": "Price override",
-      "store_available": "Available"
+      "store_available": "Available",
+      "image_url": "Image"
     },
     "stores": {
       "title": "Stores",
@@ -247,7 +251,7 @@ const messages = {
       "name": "Store name",
       "city": "City",
       "address": "Address",
-      "logo_url": "Logo URL",
+      "logo": "Logo",
       "whatsapp": "WhatsApp",
       "search_placeholder": "Search stores...",
       "empty": "No stores found.",
@@ -289,7 +293,8 @@ const messages = {
         "thu": "Thursday",
         "fri": "Friday",
         "sat": "Saturday"
-      }
+      },
+      "logo_url": "Logo"
     },
     "orders": {
       "title": "Orders",
@@ -385,6 +390,7 @@ const messages = {
       "search_placeholder": "Search payments...",
       "status_all": "All statuses",
       "order_id": "Order ID",
+      "select_order": "Select an order",
       "payment_method": "Method",
       "transaction_id": "Transaction ID",
       "amount": "Amount",
@@ -413,7 +419,7 @@ const messages = {
       "subtitle": "Hero slider content for the mobile home screen",
       "create": "Create banner",
       "editing": "Editing banner",
-      "image_url": "Image URL",
+      "image": "Image",
       "title_label": "Title",
       "subtitle_label": "Subtitle",
       "button_text": "Button text",
@@ -423,12 +429,16 @@ const messages = {
       "updated": "Banner updated",
       "deleted": "Banner deleted",
       "delete_confirm": "Delete banner",
-      "empty": "No banners found."
+      "empty": "No banners found.",
+      "image_url": "Image",
+      "search_placeholder": "Search banners...",
+      "image_required": "Please upload a banner image."
     },
     "records": {
       "title": "Activity Logs",
       "subtitle": "System actions and audit trail",
       "search_placeholder": "Search action, entity, or email...",
+      "all_users": "All users",
       "date_from": "From date",
       "date_to": "To date",
       "empty": "No activity yet."
@@ -573,7 +583,8 @@ const messages = {
       "stores_hours_save": "Failed to save store hours",
       "stores_products_load": "Failed to load store products",
       "stores_products_save": "Failed to save store products",
-      "stores_products_delete": "Failed to delete store products"
+      "stores_products_delete": "Failed to delete store products",
+      "image_upload": "Failed to upload image"
     }
   },
   "ar": {
@@ -601,13 +612,15 @@ const messages = {
       "loading": "جارٍ التحميل...",
       "total": "الإجمالي",
       "lang_en": "EN",
-      "lang_ar": "????"
+      "lang_ar": "عربي",
+      "uploading": "جارٍ رفع الصورة...",
+      "remove_image": "إزالة الصورة"
     },
     "nav": {
       "main_categories": "الفئات الرئيسية",
       "subcategories": "الفئات الفرعية",
       "attributes": "الخصائص",
-      "size_charts": "????? ????????",
+      "size_charts": "جداول المقاسات",
       "products": "المنتجات",
       "stores": "المتاجر",
       "orders": "الطلبات",
@@ -675,7 +688,7 @@ const messages = {
       "editing": "تعديل فئة رئيسية",
       "name": "الاسم",
       "slug": "المعرف",
-      "image_url": "رابط الصورة",
+      "image_url": "الصورة",
       "auto": "تلقائي",
       "sort_order": "ترتيب العرض",
       "search_placeholder": "ابحث في الفئات الرئيسية...",
@@ -683,7 +696,8 @@ const messages = {
       "created": "تم إنشاء الفئة الرئيسية",
       "updated": "تم تحديث الفئة الرئيسية",
       "deleted": "تم حذف الفئة الرئيسية",
-      "delete_confirm": "حذف الفئة الرئيسية"
+      "delete_confirm": "حذف الفئة الرئيسية",
+      "image": "الصورة"
     },
     "subcategories": {
       "title": "الفئات الفرعية",
@@ -733,23 +747,23 @@ const messages = {
       "manage_options": "الخيارات"
     },
     "size_charts": {
-      "title": "????? ????????",
-      "subtitle": "????? ?????? ??????? ??? ??? ?????",
-      "subcategory": "????? ???????",
-      "select_subcategory": "???? ??? ?????",
-      "save": "??? ???? ????????",
-      "add_row": "????? ?? ????",
-      "saved": "?? ????? ???? ????????",
-      "empty": "?? ???? ???? ??????.",
+      "title": "جداول المقاسات",
+      "subtitle": "إدارة جدول المقاسات لكل فئة فرعية",
+      "subcategory": "الفئة الفرعية",
+      "select_subcategory": "اختر فئة فرعية",
+      "save": "حفظ جدول المقاسات",
+      "add_row": "إضافة صف مقاس",
+      "saved": "تم تحديث جدول المقاسات",
+      "empty": "لا توجد بيانات مقاسات.",
       "columns": {
-        "size": "??????",
-        "chest": "????? (??)",
-        "waist": "????? (??)",
-        "hip": "????? (??)",
-        "shoulder": "??? ?????",
-        "sleeve": "??? ????",
-        "length": "??? ??????",
-        "height": "?????"
+        "size": "المقاس",
+        "chest": "الصدر (سم)",
+        "waist": "الخصر (سم)",
+        "hip": "الورك (سم)",
+        "shoulder": "عرض الكتف",
+        "sleeve": "طول الكم",
+        "length": "طول القميص",
+        "height": "الطول"
       }
     },
     "products": {
@@ -773,7 +787,7 @@ const messages = {
       "deal_start": "بداية العرض",
       "deal_end": "نهاية العرض",
       "images": "صور المنتج",
-      "image_url": "رابط الصورة",
+      "image_url": "الصورة",
       "image_alt": "نص بديل",
       "add_image": "إضافة صورة",
       "no_images": "لا توجد صور بعد.",
@@ -814,7 +828,8 @@ const messages = {
       "stores_required": "يرجى اختيار متجر واحد على الأقل.",
       "store_stock": "المخزون",
       "store_price_override": "سعر مخصص",
-      "store_available": "متاح"
+      "store_available": "متاح",
+      "image": "الصورة"
     },
     "stores": {
       "title": "المتاجر",
@@ -824,7 +839,7 @@ const messages = {
       "name": "اسم المتجر",
       "city": "المدينة",
       "address": "العنوان",
-      "logo_url": "رابط الشعار",
+      "logo_url": "الشعار",
       "whatsapp": "واتساب",
       "search_placeholder": "ابحث في المتاجر...",
       "empty": "لا توجد متاجر.",
@@ -866,7 +881,8 @@ const messages = {
         "thu": "الخميس",
         "fri": "الجمعة",
         "sat": "السبت"
-      }
+      },
+      "logo": "الشعار"
     },
     "orders": {
       "title": "الطلبات",
@@ -970,7 +986,8 @@ const messages = {
       "updated": "تم تحديث الدفعة",
       "deleted": "تم حذف الدفعة",
       "delete_confirm": "حذف الدفعة",
-      "empty": "لا توجد مدفوعات."
+      "empty": "لا توجد مدفوعات.",
+      "select_order": "اختر الطلب"
     },
     "pages": {
       "title": "الصفحات",
@@ -990,7 +1007,7 @@ const messages = {
       "subtitle": "محتوى السلايدر في الصفحة الرئيسية",
       "create": "إنشاء بنر",
       "editing": "تعديل بنر",
-      "image_url": "رابط الصورة",
+      "image_url": "الصورة",
       "title_label": "العنوان",
       "subtitle_label": "الوصف",
       "button_text": "نص الزر",
@@ -1000,7 +1017,10 @@ const messages = {
       "updated": "تم تحديث البنر",
       "deleted": "تم حذف البنر",
       "delete_confirm": "حذف البنر",
-      "empty": "لا توجد بنرات."
+      "empty": "لا توجد بنرات.",
+      "image": "الصورة",
+      "search_placeholder": "ابحث في البنرات...",
+      "image_required": "يرجى رفع صورة البنر."
     },
     "records": {
       "title": "سجل الأنشطة",
@@ -1008,7 +1028,8 @@ const messages = {
       "search_placeholder": "ابحث بالإجراء أو الكيان أو البريد...",
       "date_from": "من تاريخ",
       "date_to": "إلى تاريخ",
-      "empty": "لا يوجد نشاط بعد."
+      "empty": "لا يوجد نشاط بعد.",
+      "all_users": "كل المستخدمين"
     },
     "filters": {
       "search_label": "بحث",
@@ -1101,8 +1122,8 @@ const messages = {
       "subcategories_delete": "تعذر حذف الفئة الفرعية",
       "subcategory_attributes_load": "تعذر تحميل خصائص الفئة الفرعية",
       "subcategory_attributes_save": "تعذر حفظ خصائص الفئة الفرعية",
-      "size_charts_load": "???? ????? ???? ????????",
-      "size_charts_save": "???? ??? ???? ????????",
+      "size_charts_load": "تعذر تحميل جدول المقاسات",
+      "size_charts_save": "تعذر حفظ جدول المقاسات",
       "products_load": "تعذر تحميل المنتجات",
       "products_save": "تعذر حفظ المنتج",
       "products_delete": "تعذر حذف المنتج",
@@ -1150,7 +1171,8 @@ const messages = {
       "stores_hours_save": "تعذر حفظ ساعات العمل",
       "stores_products_load": "تعذر تحميل منتجات المتجر",
       "stores_products_save": "تعذر حفظ منتجات المتجر",
-      "stores_products_delete": "تعذر حذف منتجات المتجر"
+      "stores_products_delete": "تعذر حذف منتجات المتجر",
+      "image_upload": "تعذر رفع الصورة"
     }
   }
 };

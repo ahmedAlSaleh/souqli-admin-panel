@@ -1,4 +1,4 @@
-import { request } from './client.js';
+import { request, uploadFile } from './client.js';
 
 export const authApi = {
   login: (email, password) =>
@@ -210,4 +210,9 @@ export const adminOrdersApi = {
 
 export const ordersApi = {
   listMy: (page = 1, limit = 50) => request(`/api/orders/my?page=${page}&limit=${limit}`)
+};
+
+export const uploadApi = {
+  uploadImage: (file, folder = 'general') =>
+    uploadFile('/api/admin/uploads/images', file, { folder })
 };

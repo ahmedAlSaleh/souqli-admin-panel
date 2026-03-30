@@ -2,7 +2,7 @@
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { paymentsApi } from '../api/index.js';
+import { adminOrdersApi, paymentsApi } from '../api/index.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
 
@@ -21,6 +21,7 @@ const PaymentsPage = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [form, setForm] = useState(emptyForm);
+  const [orders, setOrders] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState('');
@@ -46,6 +47,18 @@ const PaymentsPage = () => {
   useEffect(() => {
     load();
   }, [search, statusFilter]);
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const data = await adminOrdersApi.list(1, 200);
+        setOrders(data.items || []);
+      } catch (err) {
+        // Keep payments page usable even when order options fail to load.
+      }
+    };
+    loadOrders();
+  }, []);
 
   const resetForm = () => {
     setForm(emptyForm);
@@ -128,7 +141,17 @@ const PaymentsPage = () => {
         <form className="form-grid" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>{t('payments.order_id')}</label>
-            <input type="number" min="1" name="order_id" value={form.order_id} onChange={handleChange} required />
+            <select name="order_id" value={form.order_id} onChange={handleChange} required>
+              <option value="">{t('payments.select_order')}</option>
+              {form.order_id && !orders.some((order) => String(order.id) === String(form.order_id)) && (
+                <option value={form.order_id}>{`#${form.order_id}`}</option>
+              )}
+              {orders.map((order) => (
+                <option key={order.id} value={order.id}>
+                  #{order.id} {order.user_email ? `- ${order.user_email}` : ''}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>{t('payments.payment_method')}</label>

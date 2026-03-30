@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { productApi, storeApi } from '../api/index.js';
+import AppImage from '../components/AppImage.jsx';
+import { productApi, storeApi, uploadApi } from '../api/index.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
 
@@ -43,6 +44,7 @@ const StoresPage = () => {
   const [editingId, setEditingId] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [tab, setTab] = useState('phones');
@@ -138,6 +140,22 @@ const StoresPage = () => {
       await loadStores();
     } catch (err) {
       setError(err.message || t('errors.stores_save'));
+    }
+  };
+
+  const handleLogoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setLogoUploading(true);
+    try {
+      const data = await uploadApi.uploadImage(file, 'stores');
+      setForm((prev) => ({ ...prev, logo_url: data.url || '' }));
+    } catch (err) {
+      setError(err.message || t('errors.image_upload'));
+    } finally {
+      setLogoUploading(false);
+      event.target.value = '';
     }
   };
 
@@ -388,8 +406,21 @@ const StoresPage = () => {
             <input name="city" value={form.city} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label>{t('stores.logo_url')}</label>
-            <input name="logo_url" value={form.logo_url} onChange={handleChange} />
+            <label>{t('stores.logo')}</label>
+            <input type="file" accept="image/*" onChange={handleLogoUpload} />
+            {logoUploading && <span className="muted">{t('common.uploading')}</span>}
+            <div className="image-preview-row">
+              <AppImage src={form.logo_url} alt={form.name || t('stores.name')} className="table-thumb" />
+              {form.logo_url && (
+                <button
+                  className="ghost-button danger"
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, logo_url: '' }))}
+                >
+                  {t('common.remove_image')}
+                </button>
+              )}
+            </div>
           </div>
           <div className="form-group">
             <label>{t('stores.whatsapp')}</label>
@@ -425,6 +456,11 @@ const StoresPage = () => {
       <DataTable
         columns={[
           { key: 'id', label: t('table.id') },
+          {
+            key: 'logo_url',
+            label: t('table.image'),
+            render: (row) => <AppImage src={row.logo_url} alt={row.name} className="table-thumb" />
+          },
           { key: 'name', label: t('table.name') },
           { key: 'city', label: t('table.city') },
           {

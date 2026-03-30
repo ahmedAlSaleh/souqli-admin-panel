@@ -2,7 +2,7 @@
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { logsApi } from '../api/index.js';
+import { logsApi, usersApi } from '../api/index.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
 
@@ -18,6 +18,7 @@ const RecordsPage = () => {
     date_to: ''
   });
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
   const { t } = useI18n();
 
@@ -41,6 +42,18 @@ const RecordsPage = () => {
   useEffect(() => {
     load();
   }, [filters.search, filters.action, filters.entity_type, filters.user_id, filters.date_from, filters.date_to]);
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const data = await usersApi.list(1, 200, '');
+        setUsers(data.items || []);
+      } catch (err) {
+        // User filter is optional.
+      }
+    };
+    loadUsers();
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -78,7 +91,14 @@ const RecordsPage = () => {
           </div>
           <div className="form-group">
             <label>{t('table.user')}</label>
-            <input type="number" min="1" name="user_id" value={filters.user_id} onChange={handleChange} />
+            <select name="user_id" value={filters.user_id} onChange={handleChange}>
+              <option value="">{t('records.all_users')}</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.full_name || user.email || `#${user.id}`}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>{t('records.date_from')}</label>

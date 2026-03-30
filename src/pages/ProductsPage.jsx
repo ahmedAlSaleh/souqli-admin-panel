@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { productApi, storeApi, subcategoryApi } from '../api/index.js';
+import AppImage from '../components/AppImage.jsx';
+import { productApi, storeApi, subcategoryApi, uploadApi } from '../api/index.js';
 import { slugify } from '../utils/slugify.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
@@ -54,6 +55,7 @@ const ProductsPage = () => {
   const [stores, setStores] = useState([]);
   const [storeSelections, setStoreSelections] = useState({});
   const [images, setImages] = useState([]);
+  const [imageUploading, setImageUploading] = useState(false);
   const [stock, setStock] = useState(emptyStock);
   const [variants, setVariants] = useState([]);
   const [variantForm, setVariantForm] = useState(emptyVariantForm);
@@ -179,22 +181,52 @@ const ProductsPage = () => {
     }));
   };
 
-  const createImageRow = (index = 0) => ({
+  const createImageRow = (index = 0, url = '') => ({
     temp_id: `img-${Date.now()}-${Math.random()}`,
-    url: '',
+    url,
     alt: '',
     is_primary: index === 0,
     sort_order: index
   });
 
-  const addImageRow = () => {
-    setImages((prev) => [...prev, createImageRow(prev.length)]);
-  };
-
   const updateImageField = (id, field, value) => {
     setImages((prev) =>
       prev.map((img) => (img.id === id || img.temp_id === id ? { ...img, [field]: value } : img))
     );
+  };
+
+  const ensurePrimaryImage = (list) => {
+    if (!list.length) return list;
+    if (list.some((img) => Boolean(img.is_primary))) return list;
+    return list.map((img, index) => ({ ...img, is_primary: index === 0 }));
+  };
+
+  const handleImageUpload = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+
+    setError('');
+    setImageUploading(true);
+
+    try {
+      const uploaded = [];
+      for (const file of files) {
+        const data = await uploadApi.uploadImage(file, 'products');
+        uploaded.push(data.url);
+      }
+      setImages((prev) => {
+        const next = [...prev];
+        uploaded.forEach((url) => {
+          next.push(createImageRow(next.length, url));
+        });
+        return ensurePrimaryImage(next);
+      });
+    } catch (err) {
+      setError(err.message || t('errors.image_upload'));
+    } finally {
+      setImageUploading(false);
+      event.target.value = '';
+    }
   };
 
   const setPrimaryImage = (id) => {
@@ -207,7 +239,10 @@ const ProductsPage = () => {
   };
 
   const removeImageRow = (id) => {
-    setImages((prev) => prev.filter((img) => img.id !== id && img.temp_id !== id));
+    setImages((prev) => {
+      const next = prev.filter((img) => img.id !== id && img.temp_id !== id);
+      return ensurePrimaryImage(next);
+    });
   };
 
   const handleStockChange = (event) => {
@@ -627,17 +662,16 @@ const ProductsPage = () => {
             {images.length === 0 && (
               <p className="muted">{t('products.no_images')}</p>
             )}
+            <div className="inline-group">
+              <input type="file" accept="image/*" multiple onChange={handleImageUpload} />
+              {imageUploading && <span className="muted">{t('common.uploading')}</span>}
+            </div>
             <div className="image-list">
               {images.map((img, index) => {
                 const key = img.id || img.temp_id || index;
                 return (
                   <div key={key} className="image-row">
-                    <input
-                      type="text"
-                      placeholder={t('products.image_url')}
-                      value={img.url || ''}
-                      onChange={(event) => updateImageField(key, 'url', event.target.value)}
-                    />
+                    <AppImage src={img.url} alt={img.alt || form.name} className="table-thumb" />
                     <input
                       type="text"
                       placeholder={t('products.image_alt')}
@@ -670,9 +704,6 @@ const ProductsPage = () => {
                 );
               })}
             </div>
-            <button className="ghost-button" type="button" onClick={addImageRow}>
-              {t('products.add_image')}
-            </button>
           </div>
           <div className="form-group full-width">
             <label>{t('products.inventory')}</label>
@@ -986,6 +1017,11 @@ const ProductsPage = () => {
       <DataTable
         columns={[
           { key: 'id', label: t('table.id') },
+          {
+            key: 'primary_image',
+            label: t('table.image'),
+            render: (row) => <AppImage src={row.primary_image} alt={row.name} className="table-thumb" />
+          },
           { key: 'name', label: t('table.product') },
           { key: 'slug', label: t('table.slug') },
           {

@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import SectionHeader from '../components/SectionHeader.jsx';
 import DataTable from '../components/DataTable.jsx';
 import Notice from '../components/Notice.jsx';
-import { categoryApi } from '../api/index.js';
+import AppImage from '../components/AppImage.jsx';
+import { categoryApi, uploadApi } from '../api/index.js';
 import { slugify } from '../utils/slugify.js';
 import { useI18n } from '../i18n/I18nProvider.jsx';
 import { Icon } from '../components/Icons.jsx';
@@ -21,6 +22,7 @@ const CategoriesPage = ({ onCategoriesChanged }) => {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -97,6 +99,22 @@ const CategoriesPage = ({ onCategoriesChanged }) => {
     }
   };
 
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setImageUploading(true);
+    try {
+      const data = await uploadApi.uploadImage(file, 'categories');
+      setForm((prev) => ({ ...prev, image_url: data.url || '' }));
+    } catch (err) {
+      setError(err.message || t('errors.image_upload'));
+    } finally {
+      setImageUploading(false);
+      event.target.value = '';
+    }
+  };
+
   const handleEdit = (item) => {
     setEditingId(item.id);
     setForm({
@@ -154,13 +172,21 @@ const CategoriesPage = ({ onCategoriesChanged }) => {
             </div>
           </div>
           <div className="form-group">
-            <label>{t('main_categories.image_url')}</label>
-            <input
-              name="image_url"
-              value={form.image_url}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-            />
+            <label>{t('main_categories.image')}</label>
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+            {imageUploading && <span className="muted">{t('common.uploading')}</span>}
+            <div className="image-preview-row">
+              <AppImage src={form.image_url} alt={form.name || t('main_categories.name')} className="table-thumb" />
+              {form.image_url && (
+                <button
+                  className="ghost-button danger"
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, image_url: '' }))}
+                >
+                  {t('common.remove_image')}
+                </button>
+              )}
+            </div>
           </div>
           <div className="form-group">
             <label>{t('main_categories.sort_order')}</label>
@@ -212,11 +238,7 @@ const CategoriesPage = ({ onCategoriesChanged }) => {
             key: 'image',
             label: t('table.image'),
             render: (row) =>
-              row.image_url ? (
-                <img src={row.image_url} alt={row.name} className="table-thumb" />
-              ) : (
-                <span className="muted">-</span>
-              )
+              <AppImage src={row.image_url} alt={row.name} className="table-thumb" />
           },
           { key: 'name', label: t('table.name') },
           { key: 'slug', label: t('table.slug') },
